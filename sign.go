@@ -6,6 +6,7 @@ import (
 	"crypto/rsa"
 	_ "crypto/sha1"
 	_ "crypto/sha256"
+	"crypto/x509"
 	"encoding/base64"
 	"errors"
 	"fmt"
@@ -96,7 +97,6 @@ func (ctx *SigningContext) constructSignedInfo(el *etree.Element, enveloped bool
 	} else {
 		reference.CreateAttr(URIAttr, "#"+dataId)
 	}
-
 
 	// /SignedInfo/Reference/Transforms
 	transforms := ctx.createNamespacedElement(reference, TransformsTag)
@@ -194,7 +194,11 @@ func (ctx *SigningContext) ConstructSignature(el *etree.Element, enveloped bool)
 	signatureValue.SetText(base64.StdEncoding.EncodeToString(rawSignature))
 
 	keyInfo := ctx.createNamespacedElement(sig, KeyInfoTag)
+
 	x509Data := ctx.createNamespacedElement(keyInfo, X509DataTag)
+	if err := ctx.constructIssuerSerial(x509Data, cert); err != nil {
+		return nil, err
+	}
 	for _, cert := range certs {
 		x509Certificate := ctx.createNamespacedElement(x509Data, X509CertificateTag)
 		x509Certificate.SetText(base64.StdEncoding.EncodeToString(cert))
@@ -254,4 +258,22 @@ func (ctx *SigningContext) SignString(content string) ([]byte, error) {
 		return nil, fmt.Errorf("error signing: %v", err)
 	}
 	return signature, nil
+}
+
+func (ctx *SigningContext) constructIssuerSerial(x509Data *etree.Element, cert []byte) error {
+	// extract issue name and serial
+	crt, err := x509.ParseCertificate(cert)
+	if err != nil {
+		return err
+	}
+	issuerName := crt.Issuer.String()
+	issuerSerialNumber := crt.Issuer.SerialNumber
+
+	issuerSerial := ctx.createNamespacedElement(x509Data, X509IssuerSerialTag)
+	x509IssuerName := ctx.createNamespacedElement(issuerSerial, X509IssuerNameTag)
+	x509IssuerName.SetText(issuerName)
+	fmt.Printf("************** issuer name: %s", issuerName)
+	x509SerialNumber := ctx.createNamespacedElement(issuerSerial, X509SerialNumberTag)
+	x509SerialNumber.SetText(issuerSerialNumber)
+	return nil
 }

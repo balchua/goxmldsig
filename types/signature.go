@@ -65,6 +65,7 @@ type KeyInfo struct {
 type X509Data struct {
 	XMLName          xml.Name          `xml:"http://www.w3.org/2000/09/xmldsig# X509Data"`
 	X509Certificates []X509Certificate `xml:"X509Certificate"`
+	X509IssuerSerial X509IssuerSerial  `xml:"X509IssuerSerial"`
 }
 
 type X509Certificate struct {
@@ -78,6 +79,22 @@ type Signature struct {
 	SignatureValue *SignatureValue `xml:"SignatureValue"`
 	KeyInfo        *KeyInfo        `xml:"KeyInfo"`
 	el             *etree.Element
+}
+
+type X509IssuerSerial struct {
+	XMLName          xml.Name         `xml:"http://www.w3.org/2000/09/xmldsig# X509IssuerSerial"`
+	X509IssuerName   X509IssuerName   `xml:"X509IssuerName"`
+	X509SerialNumber X509SerialNumber `xml:"X509SerialNumber"`
+}
+
+type X509IssuerName struct {
+	XMLName xml.Name `xml:"http://www.w3.org/2000/09/xmldsig# X509IssuerName"`
+	Data    string   `xml:",chardata"`
+}
+
+type X509SerialNumber struct {
+	XMLName xml.Name `xml:"http://www.w3.org/2000/09/xmldsig# X509SerialNumber"`
+	Data    string   `xml:",chardata"`
 }
 
 // SetUnderlyingElement will be called with a reference to the Element this Signature

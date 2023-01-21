@@ -23,6 +23,9 @@ const (
 	X509DataTag               = "X509Data"
 	X509CertificateTag        = "X509Certificate"
 	InclusiveNamespacesTag    = "InclusiveNamespaces"
+	X509IssuerSerialTag       = "X509IssuerSerial"
+	X509IssuerNameTag         = "X509IssuerName"
+	X509SerialNumberTag       = "X509SerialNumber"
 )
 
 const (
@@ -44,7 +47,7 @@ const (
 	RSASHA512SignatureMethod = "http://www.w3.org/2001/04/xmldsig-more#rsa-sha512"
 )
 
-//Well-known signature algorithms
+// Well-known signature algorithms
 const (
 	// Supported canonicalization algorithms
 	CanonicalXML10ExclusiveAlgorithmId             AlgorithmID = "http://www.w3.org/2001/10/xml-exc-c14n#"
