@@ -272,7 +272,6 @@ func (ctx *SigningContext) constructIssuerSerial(x509Data *etree.Element, cert [
 	issuerSerial := ctx.createNamespacedElement(x509Data, X509IssuerSerialTag)
 	x509IssuerName := ctx.createNamespacedElement(issuerSerial, X509IssuerNameTag)
 	x509IssuerName.SetText(issuerName)
-	fmt.Printf("************** issuer name: %s", issuerName)
 	x509SerialNumber := ctx.createNamespacedElement(issuerSerial, X509SerialNumberTag)
 	x509SerialNumber.SetText(issuerSerialNumber)
 	return nil
